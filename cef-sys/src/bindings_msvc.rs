@@ -21197,18 +21197,17 @@ pub struct _cef_life_span_handler_t {
     pub on_before_popup: ::std::option::Option<
         unsafe extern "C" fn(
             self_: *mut _cef_life_span_handler_t,
-            browser: *mut _cef_browser_t,
-            frame: *mut _cef_frame_t,
+            browser: *mut cef_browser_t,
+            frame: *mut cef_frame_t,
             target_url: *const cef_string_t,
             target_frame_name: *const cef_string_t,
-            target_disposition: cef_window_open_disposition_t,
+            _target_disposition: cef_window_open_disposition_t,
             user_gesture: ::std::os::raw::c_int,
-            popupFeatures: *const _cef_popup_features_t,
-            windowInfo: *mut _cef_window_info_t,
-            client: *mut *mut _cef_client_t,
-            settings: *mut _cef_browser_settings_t,
-            extra_info: *mut *mut _cef_dictionary_value_t,
-            no_javascript_access: *mut ::std::os::raw::c_int,
+            _popup_features: *const _cef_popup_features_t,
+            _window_info: *mut cef_window_info_t,
+            _client: *mut *mut cef_client_t,
+            _settings: *mut cef_browser_settings_t,
+            _no_javascript_access: *mut ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >,
     #[doc = ""]
@@ -22686,10 +22685,9 @@ pub struct _cef_client_t {
     pub on_process_message_received: ::std::option::Option<
         unsafe extern "C" fn(
             self_: *mut _cef_client_t,
-            browser: *mut _cef_browser_t,
-            frame: *mut _cef_frame_t,
-            source_process: cef_process_id_t,
-            message: *mut _cef_process_message_t,
+            _browser: *mut cef_browser_t,
+            _source_process: cef_process_id_t,
+            _message: *mut cef_process_message_t,
         ) -> ::std::os::raw::c_int,
     >,
 }

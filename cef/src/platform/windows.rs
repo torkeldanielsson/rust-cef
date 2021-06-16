@@ -20,6 +20,7 @@ pub(crate) fn default_args() -> CefMainArgsWrapper {
 }
 
 pub(crate) type CefCursorInternal = cef_sys::HCURSOR;
+pub(crate) type CefWindowHandle = cef_sys::HWND;
 
 impl<'a> WindowInfo<'a> {
     pub(crate) fn to_cef(&self) -> cef_window_info_t {

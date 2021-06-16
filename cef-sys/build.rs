@@ -65,6 +65,7 @@ fn main() {
         buffer_size: 64000, // Default
         copy_inside: true,
         depth: 0,
+        content_only: false,
     };
 
     let mut release_items = fs_extra::dir::get_dir_content(&release_dir).unwrap();
