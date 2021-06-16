@@ -18,7 +18,7 @@ pub struct Settings<'a> {
     pub persist_session_cookies: bool,
     pub persist_user_preferences: bool,
     pub user_agent: Option<&'a str>,
-    pub product_version: Option<&'a str>,
+    pub user_agent_product: Option<&'a str>,
     pub locale: Option<&'a str>,
     pub log_file: Option<&'a str>,
     pub log_severity: LogSeverity,
@@ -29,10 +29,13 @@ pub struct Settings<'a> {
     pub remote_debugging_port: Option<i32>,
     pub uncaught_exception_stack_size: Option<i32>,
     pub ignore_certificate_errors: bool,
-    pub enable_net_security_expiration: bool,
     pub background_color: u32,
     pub accept_language_list: Option<&'a str>,
     pub application_client_id_for_file_scanning: Option<&'a str>,
+    pub main_bundle_path: Option<&'a str>,
+    pub chrome_runtime: bool,
+    pub cookieable_schemes_list: Option<&'a str>,
+    pub cookieable_schemes_exclude_defaults: bool,
 }
 impl<'a> Default for Settings<'a> {
     fn default() -> Settings<'a> {
@@ -43,14 +46,14 @@ impl<'a> Default for Settings<'a> {
             multi_threaded_message_loop: false,
             external_message_pump: false,
             windowless_rendering_enabled: false,
-            command_line_args_disabled: false,
+            command_line_args_disabled: true,
             cache_path: None,
             root_cache_path: None,
             user_data_path: None,
             persist_session_cookies: false,
             persist_user_preferences: false,
             user_agent: None,
-            product_version: None,
+            user_agent_product: None,
             locale: None,
             log_file: None,
             log_severity: LogSeverity::LOGSEVERITY_DEFAULT,
@@ -61,17 +64,20 @@ impl<'a> Default for Settings<'a> {
             remote_debugging_port: None,
             uncaught_exception_stack_size: None,
             ignore_certificate_errors: false,
-            enable_net_security_expiration: false,
             background_color: 0x0000_0000,
             accept_language_list: None,
             application_client_id_for_file_scanning: None,
+            main_bundle_path: None,
+            chrome_runtime: false,
+            cookieable_schemes_list: None,
+            cookieable_schemes_exclude_defaults: false,
         }
     }
 }
 impl<'a> Settings<'a> {
     pub(crate) fn to_cef(&self) -> cef_settings_t {
         cef_settings_t {
-            size: std::mem::size_of::<cef_settings_t>(),
+            size: std::mem::size_of::<cef_settings_t>() as u64,
             no_sandbox: self.no_sandbox as c_int,
             browser_subprocess_path: CefString::convert_str_to_cef(self.browser_subprocess_path),
             framework_dir_path: CefString::convert_str_to_cef(self.framework_dir_path),
@@ -84,7 +90,7 @@ impl<'a> Settings<'a> {
             persist_session_cookies: self.persist_session_cookies as c_int,
             persist_user_preferences: self.persist_user_preferences as c_int,
             user_agent: CefString::convert_str_to_cef(self.user_agent),
-            product_version: CefString::convert_str_to_cef(self.product_version),
+            user_agent_product: CefString::convert_str_to_cef(self.user_agent_product),
             locale: CefString::convert_str_to_cef(self.locale),
             log_file: CefString::convert_str_to_cef(self.log_file),
             log_severity: self.log_severity,
@@ -95,13 +101,16 @@ impl<'a> Settings<'a> {
             remote_debugging_port: self.remote_debugging_port.unwrap_or(0),
             uncaught_exception_stack_size: self.uncaught_exception_stack_size.unwrap_or(0),
             ignore_certificate_errors: self.ignore_certificate_errors as c_int,
-            enable_net_security_expiration: self.enable_net_security_expiration as c_int,
             background_color: self.background_color,
             accept_language_list: CefString::convert_str_to_cef(self.accept_language_list),
             root_cache_path: CefString::convert_str_to_cef(self.root_cache_path),
             application_client_id_for_file_scanning: CefString::convert_str_to_cef(
                 self.application_client_id_for_file_scanning,
             ),
+            main_bundle_path: CefString::convert_str_to_cef(self.main_bundle_path),
+            chrome_runtime: self.chrome_runtime as c_int,
+            cookieable_schemes_list: CefString::convert_str_to_cef(self.cookieable_schemes_list),
+            cookieable_schemes_exclude_defaults: self.cookieable_schemes_exclude_defaults as c_int,
         }
     }
 }

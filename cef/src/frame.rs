@@ -94,14 +94,6 @@ impl Frame {
         }
     }
 
-    pub fn load_string(&self, string_val: &str, url: &str) {
-        if let Some(func) = self.ptr.as_ref().load_string {
-            let string_val = CefString::from_str(string_val);
-            let url = CefString::from_str(url);
-            unsafe { func(self.ptr.get(), &string_val.into_cef(), &url.into_cef()) }
-        }
-    }
-
     pub fn execute_javascript(&self, code: &str, script_url: &str, start_line: i32) {
         if let Some(func) = self.ptr.as_ref().execute_java_script {
             let code = CefString::from_str(code);

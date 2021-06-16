@@ -1,9 +1,9 @@
 use crate::ptr::{wrap_ptr, BaseRefCountedExt, WrapperFor};
 use crate::types::string::CefString;
-use crate::{Browser, CefSize, Frame, LogSeverity, ToCef};
+use crate::{Browser, CefCursorInternal, CefSize, Frame, LogSeverity, ToCef};
 use cef_sys::{
-    cef_browser_t, cef_display_handler_t, cef_frame_t, cef_log_severity_t, cef_size_t,
-    cef_string_list_t, cef_string_t,
+    cef_browser_t, cef_cursor_info_t, cef_cursor_type_t, cef_display_handler_t, cef_frame_t,
+    cef_log_severity_t, cef_size_t, cef_string_list_t, cef_string_t,
 };
 use std::sync::Arc;
 
@@ -30,6 +30,15 @@ pub trait DisplayHandler {
         false
     }
     fn on_loading_progress_change(&self, _browser: &Browser, _progress: f64) {}
+    fn on_cursor_change(
+        &self,
+        _browser: &Browser,
+        _cursor: CefCursorInternal,
+        _type_: cef_cursor_type_t,
+        _custom_cursor_info: *const cef_cursor_info_t,
+    ) -> ::std::os::raw::c_int {
+        0
+    }
 }
 impl DisplayHandler for () {}
 
@@ -173,6 +182,21 @@ impl<T: DisplayHandler> DisplayHandlerWrapper<T> {
             .internal
             .on_loading_progress_change(&browser, progress)
     }
+
+    unsafe extern "C" fn on_cursor_change(
+        handler: *mut cef_display_handler_t,
+        browser: *mut cef_browser_t,
+        cursor: CefCursorInternal,
+        type_: cef_cursor_type_t,
+        custom_cursor_info: *const cef_cursor_info_t,
+    ) -> ::std::os::raw::c_int {
+        let handler = Self::from_ptr(handler);
+        let browser = Browser::from(browser, false);
+
+        handler
+            .internal
+            .on_cursor_change(&browser, cursor, type_, custom_cursor_info)
+    }
 }
 impl<T: DisplayHandler> ToCef<cef_display_handler_t> for Arc<T> {
     fn to_cef(&self) -> *mut cef_display_handler_t {
@@ -192,6 +216,7 @@ impl<T: DisplayHandler> ToCef<cef_display_handler_t> for Arc<T> {
                 on_loading_progress_change: Some(
                     DisplayHandlerWrapper::<T>::on_loading_progress_change,
                 ),
+                on_cursor_change: Some(DisplayHandlerWrapper::<T>::on_cursor_change),
             },
             internal: self.clone(),
         })

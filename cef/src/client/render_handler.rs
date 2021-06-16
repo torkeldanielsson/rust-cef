@@ -200,7 +200,7 @@ impl<T: RenderHandler> RenderHandlerWrapper<T> {
         client: *mut cef_render_handler_t,
         browser: *mut cef_browser_t,
         type_: cef_paint_element_type_t,
-        dirty_rects_count: usize,
+        dirty_rects_count: u64,
         dirty_rects: *const cef_rect_t,
         buffer: *const ::std::os::raw::c_void,
         width: ::std::os::raw::c_int,
@@ -221,7 +221,7 @@ impl<T: RenderHandler> RenderHandlerWrapper<T> {
         client: *mut cef_render_handler_t,
         browser: *mut cef_browser_t,
         type_: cef_paint_element_type_t,
-        dirty_rects_count: usize,
+        dirty_rects_count: u64,
         dirty_rects: *const cef_rect_t,
         shared_handle: *mut ::std::os::raw::c_void,
     ) {
@@ -233,16 +233,6 @@ impl<T: RenderHandler> RenderHandlerWrapper<T> {
         client
             .internal
             .on_accelerated_paint(&browser, element_type, &dirty_rects, shared_handle);
-    }
-
-    extern "C" fn on_cursor_change(
-        _client: *mut cef_render_handler_t,
-        _browser: *mut cef_browser_t,
-        _cursor: CefCursorInternal,
-        _type_: cef_cursor_type_t,
-        _custom_cursor_info: *const cef_cursor_info_t,
-    ) {
-        // TODO
     }
 
     extern "C" fn start_dragging(
@@ -285,7 +275,7 @@ impl<T: RenderHandler> RenderHandlerWrapper<T> {
         client: *mut cef_render_handler_t,
         browser: *mut cef_browser_t,
         selected_range: *const cef_range_t,
-        character_bounds_count: usize,
+        character_bounds_count: u64,
         character_bounds: *const cef_rect_t,
     ) {
         let client = Self::from_ptr(client);
@@ -347,7 +337,6 @@ impl<T: RenderHandler> ToCef<cef_render_handler_t> for Arc<T> {
                 on_popup_size: Some(RenderHandlerWrapper::<T>::on_popup_size),
                 on_paint: Some(RenderHandlerWrapper::<T>::on_paint),
                 on_accelerated_paint: Some(RenderHandlerWrapper::<T>::on_accelerated_paint),
-                on_cursor_change: Some(RenderHandlerWrapper::<T>::on_cursor_change),
                 start_dragging: Some(RenderHandlerWrapper::<T>::start_dragging),
                 update_drag_cursor: Some(RenderHandlerWrapper::<T>::update_drag_cursor),
                 on_scroll_offset_changed: Some(RenderHandlerWrapper::<T>::on_scroll_offset_changed),

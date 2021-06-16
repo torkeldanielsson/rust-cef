@@ -1,8 +1,7 @@
 use crate::ptr::RefCounterGuard;
 use crate::types::string::CefString;
 use crate::{BrowserHost, Frame};
-use cef_sys::{cef_browser_host_t, cef_browser_t};
-use std::ptr::null_mut;
+use cef_sys::cef_browser_t;
 
 pub struct Browser {
     ptr: RefCounterGuard<cef_browser_t>,
@@ -165,7 +164,7 @@ impl Browser {
 
     pub fn get_frame_count(&self) -> usize {
         if let Some(func) = self.ptr.as_ref().get_frame_count {
-            unsafe { func(self.ptr.get()) }
+            unsafe { func(self.ptr.get()) as usize }
         } else {
             0
         }
@@ -179,7 +178,7 @@ impl Browser {
                 let mut count = 0;
                 func(self.ptr.get(), &mut count, identifiers.as_mut_ptr());
 
-                identifiers.resize(count, 0);
+                identifiers.resize(count as usize, 0);
                 identifiers
             }
         } else {

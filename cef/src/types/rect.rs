@@ -20,8 +20,8 @@ impl CefRect {
             height: raw.height,
         }
     }
-    pub(crate) fn from_array(count: usize, rects: *const cef_rect_t) -> Vec<CefRect> {
-        let raw_rects = unsafe { from_raw_parts(rects, count) };
+    pub(crate) fn from_array(count: u64, rects: *const cef_rect_t) -> Vec<CefRect> {
+        let raw_rects = unsafe { from_raw_parts(rects, count as usize) };
         raw_rects.iter().map(|r| Self::from(r)).collect()
     }
 }

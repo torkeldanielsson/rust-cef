@@ -113,7 +113,7 @@ impl<TCef, TWrapper: WrapperFor<TCef>> BaseRefCountedExt<TCef, TWrapper> {
     {
         let base = BaseRefCountedExt::<TCef, TWrapper> {
             v: wrapper(_cef_base_ref_counted_t {
-                size: std::mem::size_of::<Self>(),
+                size: std::mem::size_of::<Self>() as u64,
                 add_ref: Some(Self::add_ref),
                 release: Some(Self::release),
                 has_one_ref: Some(Self::has_one_ref),

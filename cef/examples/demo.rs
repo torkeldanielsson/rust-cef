@@ -1,5 +1,3 @@
-#![feature(async_await)]
-
 use cef::{
     create_browser_sync, Browser, BrowserSettings, CefRect, PaintElementType, RenderHandler,
     Settings, WindowInfo,

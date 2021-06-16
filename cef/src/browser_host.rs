@@ -1,15 +1,7 @@
 use crate::ptr::RefCounterGuard;
 use crate::types::string::CefString;
-use crate::{Browser, CefWindowHandle, Frame, PaintElementType};
-use cef_sys::{
-    cef_browser_host_t, cef_browser_settings_t, cef_client_t, cef_composition_underline_t,
-    cef_download_image_callback_t, cef_drag_data_t, cef_drag_operations_mask_t, cef_extension_t,
-    cef_file_dialog_mode_t, cef_key_event_t, cef_mouse_button_type_t, cef_mouse_event_t,
-    cef_navigation_entry_t, cef_navigation_entry_visitor_t, cef_paint_element_type_t,
-    cef_pdf_print_callback_t, cef_pdf_print_settings_t, cef_point_t, cef_range_t,
-    cef_request_context_t, cef_run_file_dialog_callback_t, cef_size_t, cef_state_t,
-    cef_string_list_t, cef_string_t, cef_touch_event_t, cef_window_info_t,
-};
+use crate::{Browser, CefWindowHandle, PaintElementType};
+use cef_sys::{cef_browser_host_t, cef_file_dialog_mode_t};
 use std::ptr::null_mut;
 
 pub type FileDialogMode = cef_file_dialog_mode_t;
@@ -196,20 +188,6 @@ impl BrowserHost {
     //        current_only: ::std::os::raw::c_int,
     //    ) {
     //    }
-
-    pub fn set_mouse_cursor_change_disabled(&self, disabled: bool) {
-        if let Some(func) = self.ptr.as_ref().set_mouse_cursor_change_disabled {
-            unsafe { func(self.ptr.get(), disabled as i32) }
-        }
-    }
-
-    pub fn is_mouse_cursor_change_disabled(&self) -> bool {
-        if let Some(func) = self.ptr.as_ref().is_mouse_cursor_change_disabled {
-            unsafe { func(self.ptr.get()) != 0 }
-        } else {
-            false
-        }
-    }
 
     pub fn replace_misspelling(&self, word: &str) {
         if let Some(func) = self.ptr.as_ref().replace_misspelling {

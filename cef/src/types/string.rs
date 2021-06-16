@@ -23,7 +23,7 @@ impl CefStringUTF16 {
 
             unsafe {
                 CefStringUTF16 {
-                    str: U16CString::from_ptr((*ptr).str, (*ptr).length).unwrap(), // TODO error safety
+                    str: U16CString::from_ptr((*ptr).str_, (*ptr).length as usize).unwrap(), // TODO error safety
                 }
             }
         }
@@ -48,8 +48,8 @@ impl CefStringUTF16 {
         }
 
         cef_string_utf16_t {
-            length: self.str.len(),
-            str: self.str.into_raw(),
+            length: self.str.len() as u64,
+            str_: self.str.into_raw(),
             dtor: Some(free_str),
         }
     }
@@ -59,7 +59,7 @@ impl CefStringUTF16 {
     }
     pub unsafe fn parse_string_list(ptr: cef_string_list_t) -> Vec<String> {
         let count = cef_sys::cef_string_list_size(ptr);
-        let mut res = Vec::with_capacity(count);
+        let mut res = Vec::with_capacity(count as usize);
         for i in 0..count {
             let value = null_mut();
             if cef_sys::cef_string_list_value(ptr, i, value) > 0 {
@@ -70,7 +70,7 @@ impl CefStringUTF16 {
     }
     pub unsafe fn parse_string_map(ptr: cef_string_map_t) -> HashMap<String, String> {
         let count = cef_sys::cef_string_map_size(ptr);
-        let mut res = HashMap::with_capacity(count);
+        let mut res = HashMap::with_capacity(count as usize);
         for i in 0..count {
             let key = null_mut();
             let value = null_mut();
